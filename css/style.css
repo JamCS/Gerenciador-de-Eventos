@@ -1,0 +1,16 @@
+.selector-for-some-widget {
+  box-sizing: content-box;
+}
+
+.navbar-brand img {
+  height: 60px;
+  width: auto;
+}
+
+.navbar-brand {
+  padding-top: 0;
+}
+
+.navbar {
+  padding-top: 0;
+}
