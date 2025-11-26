@@ -32,8 +32,8 @@ if (!body || !btnToggleTheme) {
 const formEvento = document.querySelector('#form-evento');
 
 if (formEvento) {
-    formEvento.addEventListener('submit', (Event) => {
-        Event.preventDefault();
+    formEvento.addEventListener('submit', (event) => {
+        event.preventDefault();
         
         const titulo = document.querySelector('#titulo').value.trim();
         const data = document.querySelector('#data').value;
@@ -53,7 +53,7 @@ if (formEvento) {
             criadoEm: new Date().toISOString()
         };
 
-        const evetosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos'))
+        const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]')
 
         eventosSalvos.push(novoEvento);
 
