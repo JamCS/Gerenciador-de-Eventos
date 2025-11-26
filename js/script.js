@@ -76,6 +76,13 @@ if (listaEventos) {
         contador.textContent = eventosSalvos.length
         ? `${eventosSalvos.length} evento(s) cadastrado(s)` : 'Nenhum evento cadastrado ainda';
     }
+    
+    function formatarData(valor) {
+        if (!valor) return '';
+        const [ano, mes , dia] = valor.split('-');
+        return `${dia}/${mes}/${ano}`;
+    }
+
     if (!eventosSalvos.length) {
         listaEventos.innerHTML = `
             <div class="col-12">
@@ -84,49 +91,41 @@ if (listaEventos) {
                 </div>
             </div>
         `;
-        return;
+    } else{
+        eventosSalvos.forEach((evento, index) => {
+            const col = document.createElement('div');
+            col.className = 'col-12 col-md-6 col-lg-4';
+    
+            const card = document.createElement('div');
+            card.className = 'card h-100';
+    
+            const cardBody = document.createElement('div');
+            cardBody.className = 'card-body';
+    
+            const titulo = document.createElement('h5');
+            titulo.className = 'card-title';
+            titulo.textContent = evento.titulo;
+            
+            const data = document.createElement('p'); 
+            data.className = 'card-text mb-b1';
+            data.innerHTML = `<strong>Data:</strong> ${formatarData(evento.data)}`;
+            
+            const local = document.createElement('p'); 
+            local.className = 'card-text mb-b1';
+            local.innerHTML = `<strong>Local:</strong> ${evento.local}`;
+    
+            const descricao = document.createElement('p');
+            descricao.className = 'card-text text-muted';
+            descricao.textContent = evento.descricao || 'Sem descrição';
+    
+            cardBody.appendChild(titulo);
+            cardBody.appendChild(data);
+            cardBody.appendChild(local);
+            cardBody.appendChild(descricao);
+    
+            card.appendChild(cardBody);
+            col.appendChild(card);
+            listaEventos.appendChild(col);
+        });
     }
-
-    function formatarData(valor) {
-        if (!valor) return '';
-        const [ano, mes , dia] = valor.split('-');
-        return `${dia}/${mes}/${ano}`;
-    }
-
-    eventosSalvos.forEach((evento, index) => {
-        const col = document.createElement('div');
-        col.className = 'col-12 col-md-6 col-lg-4';
-
-        const col = document.createElement('div');
-        card.className = 'card-100';
-
-        const col = document.createElement('div');
-        cardBody.className = 'card-body';
-
-        const titulo = document.createElement('h5');
-        titulo.className = 'card-title';
-        titulo.textContent = evento.titulo;
-        
-        const data = document.createElement('p'); 
-        data.className = 'card-text mb1';
-        data.innerHTML = `<strong>Data:</strong> ${formatarData(evento.data)}`;
-        
-        const local = document.createElement('p'); 
-        local.className = 'card-text mb1';
-        local.innerHTML = `<strong>Local:</strong> ${evento.local}`;
-
-        const descricao = document.createElement('p');
-        descricao.className = 'card-text text-muted';
-        descricao.textContent = evento.descricao || 'Sem descrição';
-
-        cardBody.appendChild(titulo);
-        cardBody.appendChild(data);
-        cardBody.appendChild(local);
-        cardBody.appendChild(descricao);
-
-        cardBody.appendChild(cardBody);
-        col.appendChild(card);
-        listaEventos.appendChild(col);
-
-    });
 }
