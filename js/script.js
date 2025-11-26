@@ -30,38 +30,77 @@ if (!body || !btnToggleTheme) {
 //------------------------------------------------------------------------------------------------------
 
 const formEvento = document.querySelector('#form-evento');
+let indiceEdicao = null;
 
 if (formEvento) {
-    formEvento.addEventListener('submit', (event) => {
-        event.preventDefault();
-        
-        const titulo = document.querySelector('#titulo').value.trim();
-        const data = document.querySelector('#data').value;
-        const local = document.querySelector('#local').value.trim();
-        const descricao = document.querySelector('#descricao').value.trim();
-        
-        if (!titulo || !data || !local) {
-            alert('Preencha pelo menos Título, Data e Local do evento.')
-            return;
-        }
-        
-        const novoEvento = {
-            titulo,
-            data,
-            local,
-            descricao,
-            criadoEm: new Date().toISOString()
+  indiceEdicao = localStorage.getItem('eventosplus-evento-editando');
+
+  if (indiceEdicao !== null) {
+    const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]');
+    const evento = eventosSalvos[Number(indiceEdicao)];
+
+    if (evento) {
+      document.querySelector('#titulo').value = evento.titulo || '';
+      document.querySelector('#data').value = evento.data || '';
+      document.querySelector('#local').value = evento.local || '';
+      document.querySelector('#descricao').value = evento.descricao || '';
+
+      const tituloPagina = document.querySelector('h2.text-center');
+      if (tituloPagina) tituloPagina.textContent = 'Editar Evento';
+
+      const botaoSubmit = formEvento.querySelector('button[type="submit"]');
+      if (botaoSubmit) botaoSubmit.textContent = 'Salvar alterações';
+    } else {
+      indiceEdicao = null;
+      localStorage.removeItem('eventosplus-evento-editando');
+    }
+  }
+
+  formEvento.addEventListener('submit', (event) => {
+    event.preventDefault();
+    
+    const titulo = document.querySelector('#titulo').value.trim();
+    const data = document.querySelector('#data').value;
+    const local = document.querySelector('#local').value.trim();
+    const descricao = document.querySelector('#descricao').value.trim();
+    
+    if (!titulo || !data || !local) {
+      alert('Preencha pelo menos Título, Data e Local do evento.');
+      return;
+    }
+
+    const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]');
+
+    if (indiceEdicao !== null) {
+      const idx = Number(indiceEdicao);
+
+      if (eventosSalvos[idx]) {
+        eventosSalvos[idx] = {
+          ...eventosSalvos[idx],
+          titulo,
+          data,
+          local,
+          descricao,
+          atualizadoEm: new Date().toISOString()
         };
-        
-        const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]')
-        
-        eventosSalvos.push(novoEvento);
-        
-        localStorage.setItem('eventosplus-eventos', JSON.stringify(eventosSalvos));
-        
-        formEvento.reset();
-        
-    })
+      }
+    } else {
+      const novoEvento = {
+        titulo,
+        data,
+        local,
+        descricao,
+        criadoEm: new Date().toISOString()
+      };
+
+      eventosSalvos.push(novoEvento);
+    }
+
+    localStorage.setItem('eventosplus-eventos', JSON.stringify(eventosSalvos));
+    localStorage.removeItem('eventosplus-evento-editando');
+
+    formEvento.reset();
+  });
 }
 
 //------------------------------------------------------------------------------------------------------
@@ -69,63 +108,114 @@ if (formEvento) {
 const listaEventos = document.querySelector('#lista-eventos');
 
 if (listaEventos) {
-    const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]');
-    const contador = document.querySelector('#contador-eventos');
+  const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]');
+  const contador = document.querySelector('#contador-eventos');
 
-    if (contador) {
-        contador.textContent = eventosSalvos.length
-        ? `${eventosSalvos.length} evento(s) cadastrado(s)` : 'Nenhum evento cadastrado ainda';
-    }
-    
-    function formatarData(valor) {
-        if (!valor) return '';
-        const [ano, mes , dia] = valor.split('-');
-        return `${dia}/${mes}/${ano}`;
-    }
+  if (contador) {
+    contador.textContent = eventosSalvos.length
+      ? `${eventosSalvos.length} evento(s) cadastrado(s)`
+      : 'Nenhum evento cadastrado ainda';
+  }
 
-    if (!eventosSalvos.length) {
-        listaEventos.innerHTML = `
-            <div class="col-12">
-                <div class="alert alert-info mb-0">
-                    Nenhum evento cadastrado ainda. Vá em <strong>Registrar Eventos</strong> para criar o primeiro
-                </div>
-            </div>
-        `;
-    } else{
-        eventosSalvos.forEach((evento, index) => {
-            const col = document.createElement('div');
-            col.className = 'col-12 col-md-6 col-lg-4';
-    
-            const card = document.createElement('div');
-            card.className = 'card h-100';
-    
-            const cardBody = document.createElement('div');
-            cardBody.className = 'card-body';
-    
-            const titulo = document.createElement('h5');
-            titulo.className = 'card-title';
-            titulo.textContent = evento.titulo;
-            
-            const data = document.createElement('p'); 
-            data.className = 'card-text mb-b1';
-            data.innerHTML = `<strong>Data:</strong> ${formatarData(evento.data)}`;
-            
-            const local = document.createElement('p'); 
-            local.className = 'card-text mb-b1';
-            local.innerHTML = `<strong>Local:</strong> ${evento.local}`;
-    
-            const descricao = document.createElement('p');
-            descricao.className = 'card-text text-muted';
-            descricao.textContent = evento.descricao || 'Sem descrição';
-    
-            cardBody.appendChild(titulo);
-            cardBody.appendChild(data);
-            cardBody.appendChild(local);
-            cardBody.appendChild(descricao);
-    
-            card.appendChild(cardBody);
-            col.appendChild(card);
-            listaEventos.appendChild(col);
-        });
-    }
+  function formatarData(valor) {
+    if (!valor) return '';
+    const [ano, mes, dia] = valor.split('-');
+    return `${dia}/${mes}/${ano}`;
+  }
+
+  if (!eventosSalvos.length) {
+    listaEventos.innerHTML = `
+      <div class="col-12">
+        <div class="alert alert-info mb-0">
+          Nenhum evento cadastrado ainda. Vá em <strong>Registrar Eventos</strong> para criar o primeiro.
+        </div>
+      </div>
+    `;
+  } else {
+    eventosSalvos.forEach((evento, index) => {
+      const col = document.createElement('div');
+      col.className = 'col-12 col-md-6 col-lg-4';
+
+      const card = document.createElement('div');
+      card.className = 'card h-100';
+
+      const cardBody = document.createElement('div');
+      cardBody.className = 'card-body';
+
+      const titulo = document.createElement('h5');
+      titulo.className = 'card-title';
+      titulo.textContent = evento.titulo;
+
+      const dataEl = document.createElement('p'); 
+      dataEl.className = 'card-text mb-1';
+      dataEl.innerHTML = `<strong>Data:</strong> ${formatarData(evento.data)}`;
+
+      const localEl = document.createElement('p'); 
+      localEl.className = 'card-text mb-1';
+      localEl.innerHTML = `<strong>Local:</strong> ${evento.local}`;
+
+      const descricao = document.createElement('p');
+      descricao.className = 'card-text text-muted';
+      descricao.textContent = evento.descricao || 'Sem descrição';
+
+      const cardFooter = document.createElement('div');
+      cardFooter.className = 'card-footer d-flex justify-content-between';
+
+      const btnEditar = document.createElement('button');
+      btnEditar.type = 'button';
+      btnEditar.className = 'btn btn-sm btn-outline-primary btn-editar';
+      btnEditar.dataset.index = index;
+      btnEditar.textContent = 'Editar';
+
+      const btnExcluir = document.createElement('button');
+      btnExcluir.type = 'button';
+      btnExcluir.className = 'btn btn-sm btn-outline-danger btn-excluir';
+      btnExcluir.dataset.index = index;
+      btnExcluir.textContent = 'Excluir';
+
+      cardFooter.appendChild(btnEditar);
+      cardFooter.appendChild(btnExcluir);
+
+      cardBody.appendChild(titulo);
+      cardBody.appendChild(dataEl);
+      cardBody.appendChild(localEl);
+      cardBody.appendChild(descricao);
+
+      card.appendChild(cardBody);
+      card.appendChild(cardFooter);
+      col.appendChild(card);
+      listaEventos.appendChild(col);
+    });
+
+    listaEventos.addEventListener('click', (event) => {
+      const botaoExcluir = event.target.closest('.btn-excluir');
+      const botaoEditar = event.target.closest('.btn-editar');
+
+      if (botaoExcluir) {
+        const index = Number(botaoExcluir.dataset.index);
+        const eventosAtual = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]');
+
+        if (Number.isInteger(index) && eventosAtual[index]) {
+          if (confirm('Tem certeza que deseja excluir este evento?')) {
+            eventosAtual.splice(index, 1);
+            localStorage.setItem('eventosplus-eventos', JSON.stringify(eventosAtual));
+            window.location.reload();
+          }
+        }
+        return;
+      }
+
+      if (botaoEditar) {
+        const index = Number(botaoEditar.dataset.index);
+
+        if (Number.isInteger(index)) {
+          localStorage.setItem('eventosplus-evento-editando', String(index));
+          window.location.href = 'event-register.html';
+        }
+      }
+    });
+  }
 }
+
+//------------------------------------------------------------------------------------------------------
+
