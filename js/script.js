@@ -27,3 +27,39 @@ if (!body || !btnToggleTheme) {
     });
 }
 
+//------------------------------------------------------------------------------------------------------
+
+const formEvento = document.querySelector('#form-evento');
+
+if (formEvento) {
+    formEvento.addEventListener('submit', (Event) => {
+        Event.preventDefault();
+        
+        const titulo = document.querySelector('#titulo').value.trim();
+        const data = document.querySelector('#data').value;
+        const local = document.querySelector('#local').value.trim();
+        const descricao = document.querySelector('#descricao').value.trim();
+
+        if (!titulo || !data || !local) {
+            alert('Preencha pelo menos Título, Data e Local do evento.')
+            return;
+        }
+
+        const novoEvento = {
+            titulo,
+            data,
+            local,
+            descricao,
+            criadoEm: new Date().toISOString()
+        };
+
+        const evetosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos'))
+
+        eventosSalvos.push(novoEvento);
+
+        localStorage.setItem('eventosplus-eventos', JSON.stringify(eventosSalvos));
+
+        formEvento.reset();
+
+    })
+}
