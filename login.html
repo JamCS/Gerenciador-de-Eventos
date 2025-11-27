@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventosPlus - Login</title>
+  
+     <!--Bootstrap CSS-->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+     <!--CSS path-->
+     <link rel="stylesheet" href="./css/style.css">
+</head>
+<body data-bs-theme="dark" class="bg-body text-body auth-body">
+    <main class="auth-wrapper">
+        <div class="auth-card card shadow-lg">
+        <div class="row g-0">
+            <div class="col-md-5 d-none d-md-block auth-image-side">
+            <!-- opcional: texto em cima da imagem -->
+            <div class="auth-image-overlay">
+                <h2 class="h4 fw-bold mb-2">EventosPlus</h2>
+                <p class="mb-0">Organize eventos escolares, reuniões e atividades de forma simples.</p>
+            </div>
+            </div>
+            <div class="col-12 col-md-7">
+            <div class="card-body p-4 p-md-5">
+                <div class="text-center mb-4">
+                <img src="./assets/icons/eventosPlus.png" alt="Logo EventosPlus" class="auth-logo mb-2">
+                <h1 class="h4 mb-0">Bem-vindo(a)</h1>
+                <p class="text-muted mb-0">Acesse sua conta para gerenciar seus eventos.</p>
+                </div>
+                <div id="mensagem-resultado" class="alert d-none" role="alert"></div>
+                <form id="form-login" novalidate>
+                <div class="mb-3">
+                    <label for="email-login" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email-login" required>
+                </div>
+                <div class="mb-3">
+                    <label for="senha-login" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha-login" required>
+                </div>
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="lembrar">
+                    <label class="form-check-label" for="lembrar">
+                        Lembrar-me
+                    </label>
+                    </div>
+                    <a href="#" class="small text-decoration-none">Esqueceu a senha?</a>
+                </div>
+                <div class="d-grid mb-3">
+                    <button type="submit" class="btn btn-warning">Entrar</button>
+                </div>
+                <p class="text-center mb-0">
+                    Não tem uma conta?
+                    <a href="./register.html" class="text-decoration-none">Criar conta</a>
+                </p>
+                </form>
+            </div>
+            </div>
+        </div>
+        </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <!--JS Script-->
+    <script src="./js/script.js"></script>
+</body>
+</html>
