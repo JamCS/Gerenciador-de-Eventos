@@ -21,10 +21,28 @@
                         <a class="nav-link active" href="./index.html">Lista de Eventos</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link " href="./event-register.html">Registrar Eventos</a>
+                        <a class="nav-link " href="./event-register.html" id="link-register-event">Registrar Eventos</a>
                     </li>
                     <li class="nav-item">
                         <button id="btn-toggle-theme" type="button" class="btn btn-outline-light btn-sm">☀️</button>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle d-flex align-items-center gap-2" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <span class="rounded-circle bg-secondary d-inline-flex justify-content-center align-items-center" style="width: 32px; height: 32px; font-size: 0.9rem;">👤</span>
+                            <span id="navbar-user-label" class="d-none d-sm-inline">Minha conta</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                            <li class="dropdown-header">
+                                <div class="fw-semibold" id="navbar-user-name">Visitante</div>
+                                <div class="small text-muted" id="navbar-user-email"></div>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li>
+                                <button class="dropdown-item" type="button" id="btn-logout">Sair</button>
+                            </li>
+                        </ul>
                     </li>
                 </ul>
             </div>
