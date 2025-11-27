@@ -35,6 +35,7 @@
                 <div class="card">
                     <div class="card-body">
                         <h2 class="text-center mb-3">Registrar Evento</h2>
+                        <div id="mensagem-resultado" class="alert d-none" role="alert"></div>
                         <form id="form-evento" action="">
                             <div class="mb-3">
                                 <label for="titulo" class="form-label">Título do evento</label>
@@ -51,6 +52,10 @@
                             <div class="mb-3">
                                 <label for="descricao" class="form-label">Descrição</label>
                                 <textarea class="form-control" id="descricao" rows="3"></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label for="organizadores" class="form-label">Organizador(es)</label>
+                                <input type="text" class="form-control" name="" id="organizadores" required>
                             </div>
                             <div class="mb-3">
                                 <button type="submit" class="btn btn-warning w-100">Salvar Evento</button>

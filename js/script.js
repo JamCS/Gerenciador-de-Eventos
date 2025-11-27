@@ -29,6 +29,21 @@ if (!body || !btnToggleTheme) {
 
 //------------------------------------------------------------------------------------------------------
 
+function mostrarMensagem(mensagem, tipo = 'success') {
+  const alerta = document.querySelector('#mensagem-resultado');
+  if (!alerta) return;
+
+  alerta.textContent = mensagem;
+  alerta.className = `alert alert-${tipo} mt-2`;
+  alerta.classList.remove('d-none');
+
+  setTimeout(() => {
+    alerta.classList.add('d-none');
+  }, 3000);
+}
+
+//------------------------------------------------------------------------------------------------------
+
 const formEvento = document.querySelector('#form-evento');
 let indiceEdicao = null;
 
@@ -44,6 +59,7 @@ if (formEvento) {
       document.querySelector('#data').value = evento.data || '';
       document.querySelector('#local').value = evento.local || '';
       document.querySelector('#descricao').value = evento.descricao || '';
+      document.querySelector('#organizadores').value = evento.organizadores || '';
 
       const tituloPagina = document.querySelector('h2.text-center');
       if (tituloPagina) tituloPagina.textContent = 'Editar Evento';
@@ -63,43 +79,55 @@ if (formEvento) {
     const data = document.querySelector('#data').value;
     const local = document.querySelector('#local').value.trim();
     const descricao = document.querySelector('#descricao').value.trim();
+    const organizadores = document.querySelector('#organizadores').value;
     
     if (!titulo || !data || !local) {
       alert('Preencha pelo menos Título, Data e Local do evento.');
       return;
     }
 
-    const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]');
+    try {
+      const eventosSalvos = JSON.parse(localStorage.getItem('eventosplus-eventos') || '[]');
 
-    if (indiceEdicao !== null) {
-      const idx = Number(indiceEdicao);
+      if (indiceEdicao !== null) {
+        const idx = Number(indiceEdicao);
 
-      if (eventosSalvos[idx]) {
-        eventosSalvos[idx] = {
-          ...eventosSalvos[idx],
+        if (eventosSalvos[idx]) {
+          eventosSalvos[idx] = {
+            ...eventosSalvos[idx],
+            titulo,
+            data,
+            local,
+            descricao,
+            organizadores,
+            atualizadoEm: new Date().toISOString()
+          };
+        }
+
+        localStorage.setItem('eventosplus-eventos', JSON.stringify(eventosSalvos));
+        mostrarMensagem('Evento editado com sucesso!', 'success');
+      } else {
+        const novoEvento = {
           titulo,
           data,
           local,
           descricao,
-          atualizadoEm: new Date().toISOString()
+          organizadores,
+          criadoEm: new Date().toISOString()
         };
+
+        eventosSalvos.push(novoEvento);
+        localStorage.setItem('eventosplus-eventos', JSON.stringify(eventosSalvos));
+        mostrarMensagem('Evento salvo com sucesso!', 'success');
       }
-    } else {
-      const novoEvento = {
-        titulo,
-        data,
-        local,
-        descricao,
-        criadoEm: new Date().toISOString()
-      };
 
-      eventosSalvos.push(novoEvento);
+      localStorage.removeItem('eventosplus-evento-editando');
+      indiceEdicao = null;
+      formEvento.reset();
+    } catch (erro) {
+      console.error(erro);
+      mostrarMensagem('Erro ao salvar evento. Tente novamente.', 'danger');
     }
-
-    localStorage.setItem('eventosplus-eventos', JSON.stringify(eventosSalvos));
-    localStorage.removeItem('eventosplus-evento-editando');
-
-    formEvento.reset();
   });
 }
 
@@ -158,6 +186,10 @@ if (listaEventos) {
       descricao.className = 'card-text text-muted';
       descricao.textContent = evento.descricao || 'Sem descrição';
 
+      const organizadoresE1 = document.createElement('p');
+      organizadoresE1.className = 'card-text';
+      organizadoresE1.innerHTML = `<strong>Organizadores</strong> ${evento.organizadores || 'Não informado'}`;
+
       const cardFooter = document.createElement('div');
       cardFooter.className = 'card-footer d-flex justify-content-between';
 
@@ -180,6 +212,7 @@ if (listaEventos) {
       cardBody.appendChild(dataEl);
       cardBody.appendChild(localEl);
       cardBody.appendChild(descricao);
+      cardBody.appendChild(organizadoresE1);
 
       card.appendChild(cardBody);
       card.appendChild(cardFooter);
